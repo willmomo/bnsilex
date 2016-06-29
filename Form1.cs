@@ -203,7 +203,52 @@ namespace bnsilex {
 			g.DrawPath(Pens.Black, gp);
 			g.FillPath(Brushes.White, gp);
 
+
+
 			//g.DrawRectangle(Pens.Blue, rc);
+		}
+
+		private void DrawBig(Graphics g, string data, int ofs) {
+			StringFormat sf = new StringFormat();
+			Rectangle rc;
+			Font fnt = new Font("MS UI Gothic", 70, FontStyle.Bold);
+			sf.Alignment = StringAlignment.Far;
+			sf.LineAlignment = StringAlignment.Center;
+
+			rc = new Rectangle(448, 0, 826 - 448, 94);
+			rc.Offset(0, 96 * ofs);
+
+			var rc2 = rc;
+			rc2.Offset(2, 2);
+			g.DrawString(data, fnt, Brushes.White, rc2, sf);
+			g.DrawString(data, fnt, Brushes.Black, rc, sf);
+		}
+
+		private void DrawKishuName(Graphics g, string data, int ofs) {
+			Rectangle rc;
+			rc = new Rectangle(118, 0, 283 - 118, 94);
+			rc.Offset(0, 96 * ofs);
+
+			StringFormat sf = new StringFormat();
+			sf.Alignment = StringAlignment.Near;
+			sf.LineAlignment = StringAlignment.Center;
+			sf.FormatFlags = StringFormatFlags.NoWrap;
+			sf.FormatFlags |= StringFormatFlags.NoClip;
+
+			Font fnt = new Font("MS UI Gothic", 30, FontStyle.Bold);
+			for (int i = 20; i > 1; i--) {
+				fnt = new Font("MS UI Gothic", i, FontStyle.Bold);
+				using (StringFormat sfTemp = new StringFormat(StringFormat.GenericTypographic)) {
+					var size = g.MeasureString(data, fnt, (int)g.VisibleClipBounds.Width, sfTemp);
+					if (size.Width < rc.Width)
+						break;
+				}
+			}
+
+			var rc2 = rc;
+			rc2.Offset(2, 2);
+			g.DrawString(data, fnt, Brushes.White, rc2, sf);
+			g.DrawString(data, fnt, Brushes.Black, rc, sf);
 		}
 
 		private void DrawMyCanvas(Dictionary<int, Dictionary<string, object>> data) {
@@ -218,17 +263,23 @@ namespace bnsilex {
 			foreach (int daiNo in data.Keys) {
 				SizeF size = g.MeasureString("9999", fnt);
 				//g.DrawString(daiNo.ToString(), fnt, Brushes.Black, x, y);
-				DrawDaiNo(g, daiNo, ofs++);
+				DrawDaiNo(g, daiNo, ofs);
 
 				Dictionary<string, object> daiData = data[daiNo];
+
 				if (daiData["KishuType"].ToString() == "0") {
 					// P表示
 					//g.DrawString(daiData["出玉数"].ToString(), fnt, Brushes.Black, x+size.Width, y);
+					DrawBig(g, daiData["出玉数"].ToString(), ofs);
 				} else {
 					// S表示
 					//g.DrawString(daiData["出玉数"].ToString(), fnt, Brushes.Black, x + size.Width, y);
+					DrawBig(g, daiData["出玉数"].ToString(), ofs);
 				}
 
+				DrawKishuName(g, daiData["KishuName"].ToString(), ofs);
+
+				++ofs;
 				y += size.Height;
 			}
 

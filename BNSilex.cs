@@ -34,6 +34,11 @@ namespace bnsilex {
 		// make data PS common
 		private void MakeDataPS(DataRow row, Dictionary<string, object> cols) {
 			cols["KishuType"] = row["KishuType"];
+			cols["KishuName"] = row["KishuName"];
+			cols["Kadouchu"] = row["Kadouchu"];
+			cols["T1chu"] = row["T1chu"];
+			cols["T2chu"] = row["T2chu"];
+			cols["RBchu"] = row["RBchu"];
 			cols["最高獲得数"] = ((Func<int>)(() => {
 				int a = int.Parse(row["MaxMochidama"].ToString());
 				return Math.Max(0, a);
